@@ -1,0 +1,63 @@
+tproxy-port: 7893
+mixed-port: 8888
+allow-lan: true
+bind-address: "*" 
+find-process-mode: strict
+mode: rule
+geox-url:
+  geoip: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
+  geosite: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
+  mmdb: "https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.metadb"
+geo-auto-update: true
+geo-update-interval: 24
+global-ua: clash.meta
+geodata-mode: true
+geodata-loader: standard
+geosite-matcher: succinct
+log-level: info
+ipv6: true
+external-controller: 0.0.0.0:9090
+global-client-fingerprint: chrome
+keep-alive-interval: 30
+tcp-concurrent: true
+unified-delay: true
+profile:
+  store-selected: true
+  store-fake-ip: true
+tun: 
+  enable: true
+  device: Mihomo
+  stack: System
+  dns-hijack: ['any:53']
+  auto-route: true
+  auto-detect-interface: true
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: false
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  force-domain:
+    - +.v2ex.com
+  skip-domain:
+    - Mijia Cloud
+dns:
+  enable: true
+  ipv6: true
+  prefer-h3: true
+  listen: 0.0.0.0:1053
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  fallback-filter: {geoip: true, geoip-code: CN, geosite: ['!CN', 'GFW', 'GREATFIRE'], ipcidr: ['240.0.0.0/4'], domain: ['+.google.com', '+.facebook.com', '+.youtube.com']}
+  fake-ip-filter: ['*.lan', 'connect.rom.miui.com', 'www.msftconnecttest.com', 'localhost.ptlogin2.qq.com', 'xbox.*.microsoft.com', '+.xboxlive.com', '+.bilivideo.com']
+  default-nameserver: ['tls://223.5.5.5']
+  nameserver: ['tls://223.5.5.5']
+  fallback: ['tls://223.5.5.5']

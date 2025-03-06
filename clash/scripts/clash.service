@@ -1,0 +1,131 @@
+#!/system/bin/sh
+
+scripts=`realpath $0`
+scripts_dir=`dirname ${scripts}`
+. /data/clash/clash.config
+
+start_clash() {
+    if [ "${ipv6}" = "false" ] ; then
+        for net in /proc/sys/net/ipv6/conf/{wlan*,*data*} ; do
+            echo ${net} | grep -q wlan
+            if [ $? -eq 0 ] ; then
+                echo 0 > ${net}/accept_ra
+            fi
+            echo 1 > ${net}/disable_ipv6
+        done
+    else
+        for net in /proc/sys/net/ipv6/conf/{wlan*,*data*} ; do
+            echo ${net} | grep -q wlan
+            if [ $? -eq 0 ] ; then
+                echo 1 > ${net}/accept_ra
+            fi
+            echo 0 > ${net}/disable_ipv6
+        done
+    fi
+
+    echo "------------------------------------" > ${CFM_logs_file}
+    
+    pid=`cat ${Clash_pid_file} 2> /dev/null`
+    if (cat /proc/${pid}/cmdline | grep -q clash) ; then
+        echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: 检测到Clash已启动,此次不启动." >> ${CFM_logs_file}
+        exit 1
+    fi
+
+    if [ "${Clash_tproxy_port}" == 0 ] || [ "${Clash_tproxy_port}" == ""  ]; then
+        if [ "${Clash_tun_status}" != "true" ]; then
+            echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"err: tproxy和tun得二选一." >> ${CFM_logs_file}
+            exit 1
+        fi
+    fi
+    
+    cp -f ${template_file} ${temporary_config_file}.swp && echo "\n" >> ${temporary_config_file}.swp
+    sed -n -E '/^proxies:.*$/,$p' ${Clash_config_file} >> ${temporary_config_file}.swp
+    sed -i '/^[  ]*$/d' ${temporary_config_file}.swp
+
+    mv -f ${temporary_config_file}.swp ${temporary_config_file} \
+    && echo "" >> ${CFM_logs_file} || echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"err:配置文件合并失败"
+
+    if [ -f "${Clash_bin_path}" ] ; then
+        mkdir -p ${Clash_run_path}
+        chown ${Clash_user_group} ${Clash_bin_path}
+        chmod ${Clash_permissions} ${Clash_bin_path}
+        chown ${Clash_user_group} ${temporary_config_file}
+        chmod 0644 ${temporary_config_file}
+
+        ${busybox_path} crontab -c ${Clash_run_path} -r
+        touch ${Clash_run_path}/root
+        chmod 0600 ${Clash_run_path}/root
+
+        if [ "${auto_updateGeoSite}" == "true" ]; then
+            echo "${update_geoXInterval} ${scripts_dir}/clash.tool -u" > ${Clash_run_path}/root \
+            && echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: 自动更新GeoX定时已开启." >> ${CFM_logs_file}
+        fi
+
+        if [ "${auto_updateSubcript}" == "true" ]; then
+            echo "${update_subcriptInterval} ${scripts_dir}/clash.tool -s" > ${Clash_run_path}/root \
+            && echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: 自动更新订阅定时已开启." >> ${CFM_logs_file}
+        fi
+
+        sed -i '/^[  ]*$/d' ${CFM_logs_file}
+        if [ "${filter_local}" = "true" ] ; then
+            com="${scripts_dir}/clash.tool -m ; sleep 10 ;${scripts_dir}/clash.tool -m ; sleep 10; ${scripts_dir}/clash.tool -m ;sleep 10; ${scripts_dir}/clash.tool -m;sleep 10;${scripts_dir}/clash.tool -m ; sleep 10;${scripts_dir}/clash.tool -m"
+            echo "*/1 * * * * ${com}" >> ${Clash_run_path}/root && echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: 自动绕过本地ip段已打开." >> ${CFM_logs_file}
+        fi
+    else
+        echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"err: Clash内核丢失." >> ${CFM_logs_file}
+        exit 1
+    fi
+
+    if [ -f ${temporary_config_file} ] && [ -f ${Clash_GeoIP_file} ] ; then
+        if $(${Clash_bin_path} -d ${Clash_data_dir} -t -f ${temporary_config_file} > /dev/null) ; then
+            if [ "${Clash_tun_status}" == "true" ]; then
+                mkdir -p /dev/net
+                ln -sf /dev/tun /dev/net/tun
+            fi
+            mv /data/clash/run/kernel.log /data/clash/run/kernel.old.log
+            ulimit -SHn 1000000
+            nohup ${busybox_path} setuidgid ${Clash_user_group} ${Clash_bin_path} -d ${Clash_data_dir} -f ${temporary_config_file} > /data/clash/run/kernel.log 2>&1 &
+            echo -n $! > ${Clash_pid_file}
+            ${scripts_dir}/clash.tool -l
+            echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: Clash内核已启动." >> ${CFM_logs_file}
+        else
+            echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: 配置有误，启动失败." >> ${CFM_logs_file}
+            exit 1
+        fi
+    else
+        echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: 文件缺失." >> ${CFM_logs_file}
+        exit 1
+    fi
+
+    return # 去掉端口检查
+
+    if [ "${Clash_tun_status}" == "true" ]; then
+        return
+    fi
+    sleep 5
+    if ! (${scripts_dir}/clash.tool -p) ; then
+        kill -15 `cat ${Clash_pid_file}`
+        rm -rf ${Clash_pid_file}
+        echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"err: 端口未检测到,已停止Clash内核以及后续逻辑." >> ${CFM_logs_file}
+        exit 1
+    fi
+}
+
+stop_clash() {
+    kill -15 `cat ${Clash_pid_file}`
+    echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: 停止Clash内核." >> ${CFM_logs_file}
+}
+
+while getopts ":sk" signal ; do
+    case ${signal} in
+        s)
+            start_clash
+            ;;
+        k)
+            stop_clash
+            ;;
+        ?)
+            echo ""
+            ;;
+    esac
+done

@@ -1,0 +1,11 @@
+proxies:
+proxy-providers:
+  订阅名称: {interval: 3600,  type: http, url: "订阅链接"}
+proxy-groups:
+  - {name: "PROXY", type: select, url: 'http://www.gstatic.com/generate_204', interval: 300, include-all: true}
+rules:
+ - GEOSITE,private,DIRECT
+ - GEOSITE,CN,DIRECT
+ - GEOIP,private,DIRECT
+ - GEOIP,CN,DIRECT
+ - MATCH,PROXY

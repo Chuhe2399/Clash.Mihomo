@@ -6,6 +6,8 @@ Clash.Mihomo 模块，支持KernelSU、APatch、Magisk
 
 文件配置目录在：/data/clash/
 
+文件配置示例：https://github.com/MetaCubeX/mihomo/blob/Alpha/docs/config.yaml
+
 附加控制软件：https://t.me/MagiskChangeKing
 
 KsuWebUI：https://github.com/5ec1cff/KsuWebUIStandalone

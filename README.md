@@ -4,6 +4,8 @@ Clash.Mihomo 模块，支持KernelSU、APatch、Magisk
 
 内核文件目录：/data/adb/modules/Clash.Mihomo/system/bin/
 
+内核下载链接：https://github.com/MetaCubeX/mihomo/releases/tag/Prerelease-Alpha
+
 文件配置目录：/data/clash/
 
 文件配置示例：https://github.com/MetaCubeX/mihomo/blob/Alpha/docs/config.yaml

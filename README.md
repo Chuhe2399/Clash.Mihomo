@@ -2,6 +2,8 @@ Clash.Mihomo 模块，支持KernelSU、APatch、Magisk
 
 利用TProxy/Tun支持Clash.Mihomo的透明代理
 
+作者：kalasutra/MC2K/Chuhe
+
 内核文件目录：/data/adb/modules/Clash.Mihomo/system/bin/
 
 文件配置目录：/data/clash/

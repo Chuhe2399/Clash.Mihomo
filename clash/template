@@ -54,7 +54,7 @@ dns:
   listen: 0.0.0.0:1053
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  fake-ip-filter: ['*.lan', 'connect.rom.miui.com', 'www.msftconnecttest.com', 'localhost.ptlogin2.qq.com', 'xbox.*.microsoft.com', '+.xboxlive.com', '+.bilivideo.com',  'geosite:private']
+  fake-ip-filter: ['*.lan', 'connect.rom.miui.com',  'localhost.ptlogin2.qq.com', 'xbox.*.microsoft.com', '+.xboxlive.com', '+.bilivideo.com', 'geosite:private']
   fake-ip-filter-mode: blacklist
   use-hosts: true
   fallback-filter: {geoip: true, geoip-code: CN, geosite: ['!CN', 'GFW', 'GREATFIRE'], ipcidr: ['240.0.0.0/4'], domain: ['+.google.com', '+.facebook.com', '+.youtube.com']}

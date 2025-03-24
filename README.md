@@ -18,4 +18,4 @@ Clash.Mihomo 模块，支持KernelSU、APatch、Magisk
 
 KsuWebUI：https://github.com/5ec1cff/KsuWebUIStandalone
 
-注：第一次刷入重启后需要手动重启内核才能正常使用，模块不再指定本地面板，需要在线面板进行控制，有需求指定本地面板的，可以自行添加指定路径（external-ui: “路径”）。
+注：第一次刷入模块重启后需要手动重启内核才能正常使用，模块不再指定本地面板，需要在线面板进行控制，有需求指定本地面板的，可以自行添加指定路径（external-ui: “路径”）。

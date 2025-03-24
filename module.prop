@@ -3,4 +3,4 @@ name=Clash.Mihomo
 version=v3.00.00
 versionCode=20250306
 author=kalasutra/MC2K/Chuhe
-description=利用Tproxy/Tun支持Clash.Mihomo的透明代理.
+description=利用TProxy/Tun支持Clash.Mihomo的透明代理.

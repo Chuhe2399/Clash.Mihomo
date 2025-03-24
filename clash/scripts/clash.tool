@@ -119,7 +119,7 @@ find_packages_uid() {
     hd=""
     for package in $(cat ${filter_packages_file}); do
         if [ "${Clash_enhanced_mode}" == "fake-ip" ] && [ "${Clash_tun_status}" != "true" ]; then
-            echo [$(TZ=Asia/Shanghai date "+%H:%M:%S")]"war: Tproxy_fake-ip下禁用黑白名单." >>${CFM_logs_file}
+            echo [$(TZ=Asia/Shanghai date "+%H:%M:%S")]"war: TProxy_fake-ip下禁用黑白名单." >>${CFM_logs_file}
             return
         fi
         nhd=$(awk -F ">" '/^[0-9]+>$/{print $1}' <<< "${package}")
@@ -157,7 +157,7 @@ port_detection() {
     fi
 
     if ! (echo ${clash_port} | grep ${Clash_tproxy_port}); then
-        echo [$(TZ=Asia/Shanghai date "+%H:%M:%S")]"err: Tproxy端口未启动." >>${CFM_logs_file}
+        echo [$(TZ=Asia/Shanghai date "+%H:%M:%S")]"err: TProxy端口未启动." >>${CFM_logs_file}
         exit 1
     fi
 
@@ -165,7 +165,7 @@ port_detection() {
         echo [$(TZ=Asia/Shanghai date "+%H:%M:%S")]"err: DNS端口未启动." >>${CFM_logs_file}
         exit 1
     fi
-    echo [$(TZ=Asia/Shanghai date "+%H:%M:%S")]"info: Tproxy和DNS端口已启动." >>${CFM_logs_file}
+    echo [$(TZ=Asia/Shanghai date "+%H:%M:%S")]"info: TProxy和DNS端口已启动." >>${CFM_logs_file}
     exit 0
 }
 

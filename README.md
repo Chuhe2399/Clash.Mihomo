@@ -8,7 +8,7 @@ Clash.Mihomo 模块，支持KernelSU、APatch、Magisk
 
 内核日志目录：/data/clash/run/
 
-启动关闭内核：模块管理器开关
+启动关闭内核：模块管理器控制开关
 
 内核下载链接：https://github.com/MetaCubeX/mihomo/releases/tag/Prerelease-Alpha
 

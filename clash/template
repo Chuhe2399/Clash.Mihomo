@@ -43,11 +43,10 @@ sniffer:
     TLS:
       ports: [443, 8443]
     QUIC:
-      ports: [443, 8443]
-  force-domain:
-    - +.v2ex.com
-  skip-domain:
-    - Mijia Cloud
+      ports: [443]
+  sniffing:
+    - tls
+    - http
 dns:
   enable: true
   ipv6: true
@@ -55,9 +54,10 @@ dns:
   listen: 0.0.0.0:1053
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
+  fake-ip-filter: ['*.lan', 'connect.rom.miui.com', 'www.msftconnecttest.com', 'localhost.ptlogin2.qq.com', 'xbox.*.microsoft.com', '+.xboxlive.com', '+.bilivideo.com',  'geosite:private']
+  fake-ip-filter-mode: blacklist
   use-hosts: true
   fallback-filter: {geoip: true, geoip-code: CN, geosite: ['!CN', 'GFW', 'GREATFIRE'], ipcidr: ['240.0.0.0/4'], domain: ['+.google.com', '+.facebook.com', '+.youtube.com']}
-  fake-ip-filter: ['*.lan', 'connect.rom.miui.com', 'www.msftconnecttest.com', 'localhost.ptlogin2.qq.com', 'xbox.*.microsoft.com', '+.xboxlive.com', '+.bilivideo.com']
   default-nameserver: ['tls://223.5.5.5']
   nameserver: ['tls://223.5.5.5']
   fallback: ['tls://223.5.5.5']

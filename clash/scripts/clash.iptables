@@ -434,7 +434,7 @@ while getopts ":sk" signal ; do
                         set_tun
                     fi
                 else
-                    echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: 开启Tproxy模式." >> ${CFM_logs_file}
+                    echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: 开启TProxy模式." >> ${CFM_logs_file}
                     create_rule_rules && apply_rules
                 fi
                 echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"info: iptables规则已应用." >> ${CFM_logs_file}

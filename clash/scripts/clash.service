@@ -33,7 +33,7 @@ start_clash() {
 
     if [ "${Clash_tproxy_port}" == 0 ] || [ "${Clash_tproxy_port}" == ""  ]; then
         if [ "${Clash_tun_status}" != "true" ]; then
-            echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"err: tproxy和tun得二选一." >> ${CFM_logs_file}
+            echo [`TZ=Asia/Shanghai date "+%H:%M:%S"`]"err: TProxy和Tun得二选一." >> ${CFM_logs_file}
             exit 1
         fi
     fi
